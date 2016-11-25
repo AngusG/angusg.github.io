@@ -17,7 +17,7 @@ title: Learning of Things
 email: gallowaa@myschool.ca
 description: > # this means to ignore newlines until "baseurl:"
   Personal blog on machine learning embedded in things, hence Learning of Things, 
-  a play on Internet of Things.
+  as in Internet of Things.
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: jekyllrb
