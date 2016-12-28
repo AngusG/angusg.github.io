@@ -1,9 +1,13 @@
 ---
 layout: post
-title:  "A Practical Guide to Technical Writing in Engineering"
+title:  "Practical Guide to Technical Writing in Engineering"
 date:   2016-11-25 13:48:26 -0500
 categories: writing
 ---
+
+<!-- KaTeX -->
+<!--<link rel="stylesheet" href="/public/katex/katex.min.css">-->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">
 
 # Introduction
 
@@ -18,6 +22,14 @@ __ENGG*4420__
 + The purpose of this lab was to implement a quarter-car suspension model in LabVIEW, and compare the performance of a passive system to that of a semi-active linear quadratic regulator (LQR) controlled system. Several performance measures were devised, including the vertical acceleration of the quarter car sprung mass, and suspension deflection, when the model was subject to sinusoidal and step inputs ...
 
 + The model was to be architechted using a modular plant model with the LQR controller in a separate LabVIEW timed loop, such that the controller could be evaluated deterministically in LabVIEW RTOS, and in future easily scaled up to a full-car model.
+
+Centered version {% latex centred %} P(x)=\frac{1}{\sigma\sqrt{2\pi}}e^{-\frac{(x-\mu)^2}{2\sigma ^2}} {% endlatex %}
+
+Normal version {% latex %} P(x)=\frac{1}{\sigma\sqrt{2\pi}}e^{-\frac{(x-\mu)^2}{2\sigma ^2}} {% endlatex %}
+
+This is a centred equation: {% latex centred %} K_0 = \sqrt{\frac{m}{ih t}} e^{-\frac{m(x-x')^2}{i\frac{h}{2\pi} t}} {% endlatex %}
+
+This is a john equation: {% latex centred %} K_0 = \sqrt{\frac{m}{ih t}} e^{-\frac{m(x-x')^2}{i\frac{h}{2\pi} t}} {% endlatex %}
 
 
 {% highlight ruby %}
