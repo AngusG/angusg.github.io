@@ -14,19 +14,39 @@ Partial differential equations
 
 Sections
 
+{% highlight ruby %}
 \\section{([A-Za-z]+)}
 # $1
-
+{% endhighlight %}
 
 Subsections
 
+{% highlight ruby %}
 \\subsection{([A-Za-z]+)}
 ## $1
+{% endhighlight %}
 
 Labels
 
+{% highlight ruby %}
 \\label{[a-z:]+}
-<empty>
+{% endhighlight %}
 
+
+Italics
+
+{% highlight ruby %}
 \\emph{([A-za-z .,?']+)}
 *$1*
+{% endhighlight %}
+
+Bold
+
+{% highlight ruby %}
+\\textbf{([A-za-z\\_]+)}
+__$1__
+{% endhighlight %}
+
+Equations
+\$([A-Za-z_\d{}]+)\$
+{% latex %} $1 {% endlatex %}
