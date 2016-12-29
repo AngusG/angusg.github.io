@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: default
 title:  "Practical Guide Technical Writing Engineering"
 date:   2016-11-25 13:48:26 -0500
 categories: writing
