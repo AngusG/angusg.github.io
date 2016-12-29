@@ -33,5 +33,7 @@ exclude:
   - Gemfile
   - Gemfile.lock
 
+safe: false
+
 katex:
     path_to_js: "./_assets/katex.min.js"
