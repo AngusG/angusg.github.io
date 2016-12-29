@@ -57,7 +57,14 @@ Recognizing that \eqref{eq:penultimate} is composed of \eqref{eq:softmax}, \eqre
 
 *There is universal agreement in the Engineering community on formatting equations as above, however this is IEEE inspired in how equations are referred to in text, with only circle braces. You don't have to use IEEE style, but do always use circle braces. Equation (1), equation (1), eq. (1) are also accepted. One of the primary motivations for typesetting your own equations, when you could otherwise copy them from the Lab Manual, is that it makes you more aware of variables or terms that need to be explained to the reader.*
 
-The class of image {% latex %} f {% endlatex %}, is taken to be that of the template, {% latex %} t {% endlatex %}, corresponding to the maximum correlation coefficient, {% latex %} \gamma {% endlatex %}, in the normalized 2D cross-correlation \cite{match_template} given by \eqref{eq:ncc}. In \eqref{eq:ncc}, {% latex %} \overline{t} {% endlatex %} is the template mean, and  {% latex %} \overline{f}_{u,v} {% endlatex %} is the image mean in the region {% latex %} f(x,y) {% endlatex %} spanned by {% latex %} t {% endlatex %} centered at {% latex %} u {% endlatex %},{% latex %} v {% endlatex %}.
+The class of image {% latex %} f {% endlatex %}, is taken to be that of the template, 
+{% latex %} t {% endlatex %}, corresponding to the maximum correlation coefficient, 
+{% latex %} \gamma {% endlatex %}, in the normalized 2D cross-correlation 
+\cite{match_template} given by \eqref{eq:ncc}. In \eqref{eq:ncc}, 
+{% latex %} \overline{t} {% endlatex %} is the template mean, and  
+{% latex %} \overline{f}_{u,v} {% endlatex %} is the image mean in the 
+region {% latex %} f(x,y) {% endlatex %} spanned by {% latex %} t {% endlatex %} 
+centered at {% latex %} u {% endlatex %},{% latex %} v {% endlatex %}.
 
 {% latex centred %}
   \gamma(u,v) = \frac{\sum_{x,y}[f(x,y)-\overline{f}_{u,v}][t(x-u, y-v)-\overline{t}]}{\sqrt{\sum_{x,y}[f(x,y)-\overline{f}_{u,v}]^2[t(x-u, y-v)-\overline{t}]^2}}
@@ -65,12 +72,12 @@ The class of image {% latex %} f {% endlatex %}, is taken to be that of the temp
 
 __ENGG*4420__
 
-+ The vertical acceleration of the sprung mass is the dominant force experienced by a vehicle's occupants, and is therefore a suitable proxy for ride quality \dots
++ The vertical acceleration of the sprung mass is the dominant force experienced by a vehicle's occupants, and is therefore a suitable proxy for ride quality ...
 
 + An additional goal of a suspension system is to maintain good road handling on a variety of surfaces. Tire deflection is a good
-measure of how effective the suspension system is at road handling \dots
+measure of how effective the suspension system is at road handling ...
 
-+ A suspension system also has to support the vehicle's static weight under gravity. It was required that the suspension deflection remain within fixed physical bounds at all times under this load, and for all road disturbances in the design specification \dots
++ A suspension system also has to support the vehicle's static weight under gravity. It was required that the suspension deflection remain within fixed physical bounds at all times under this load, and for all road disturbances in the design specification ...
 
 + Letting {% latex %} x_1 {% endlatex %} be the suspension deflection, {% latex %} x_2 {% endlatex %} the absolute velocity of the sprung mass, {% latex %} x_3 {% endlatex %} the tire deflection, and {% latex %} x_4 {% endlatex %} the velocity of the unsprung mass, we may represent the passive suspension system in state space form in \eqref{eq:ss-passive}.
 
@@ -148,7 +155,7 @@ __ENGG*4420__
 
 ## Source Code
 
-\emph{What about your source code? The truth is, no one wants to look at raw source code in the body of a report, especially not a raster graphic screenshot of the code from the Eclipse IDE. If you must show code, keep it short, to the point, and formatted. If you are using Latex, __'lstinputlisting[]'__ is your friend. Otherwise, paste the code as __text__, not a raster graphic. A good way to keep the code clean if you don't want to comment it is to refer to specific listing, in the same way that you refer to a figure. Please, don't refer to __the code above/below__, as it sometimes gets pushed 3 pages later when the report is said and done.}
+*What about your source code? The truth is, no one wants to look at raw source code in the body of a report, especially not a raster graphic screenshot of the code from the Eclipse IDE. If you must show code, keep it short, to the point, and formatted. If you are using Latex, __'lstinputlisting[]'__ is your friend. Otherwise, paste the code as __text__, not a raster graphic. A good way to keep the code clean if you don't want to comment it is to refer to specific listing, in the same way that you refer to a figure. Please, don't refer to __the code above/below__, as it sometimes gets pushed 3 pages later when the report is said and done.*
 
 Python source for multinomial logistic regression while sweeping the number of principal components representing a cropped and downsampled image.
 
@@ -185,26 +192,26 @@ void counting_task(IOdevices_control *IOdevices) {
 
 # Results
 
-\emph{There are many ways to present your results, certain things are best illustrated with figures, others with tables. Say at least one thing that is non-obvious, and insightful, regarding each of the figures.} 
+*There are many ways to present your results, certain things are best illustrated with figures, others with tables. Say at least one thing that is non-obvious, and insightful, regarding each of the figures.*
 
 ![MLP]({{site.url}}/img/canny_sigma_1_3_hough.png)
 
 Figure 2: (*Left*) Output of Canny edge detector with Gaussian smoothing parameter, {% latex %} \sigma {% endlatex %}, equal to 1, 2, and 3, for rows 1, 2, and 3 respectively. (*Right*) Resulting probabilistic Hough lines \cite{prob_hough}, with line gap of 3px, and minimum line length of 25px. Produced with scikit-image Python library \cite{scikit-image}.
 
-\emph{Some figures compare many things at once and have an inherrent structure, as in Figure~\ref{fig:hough_lines}. In this case, use circle braces and italics to explain each section of the figure where natural to do so. The style you use for this doesn't matter as long as it is consistent and sufficiently descriptive.}
+*Some figures compare many things at once and have an inherrent structure, as in Figure~\ref{fig:hough_lines}. In this case, use circle braces and italics to explain each section of the figure where natural to do so. The style you use for this doesn't matter as long as it is consistent and sufficiently descriptive.*
 
 An encouraging result was obtained when Listing~\ref{sweep_pca} was run with {% latex %} ds\_v {% endlatex %},
-{% latex %} ds\_h {% endlatex %} = 2, and keeping only the first three principal components, yielding 100\% 
+{% latex %} ds\_h {% endlatex %} = 2, and keeping only the first three principal components, yielding 100% 
 accuracy. For the sake of minimizing the algorithm execution time, the downsampling factors {% latex %} 
 ds\_v {% endlatex %} and {% latex %} ds\_h {% endlatex %} were incremented by hand in steps of one until 
 the accuracy began to drop. It was found that {% latex %} ds\_v {% endlatex %} and {% latex %} ds\_h {% endlatex %} 
-could be increased all the way to 21 while maintaining 100\% accuracy, where nearly all of the detail was lost 
+could be increased all the way to 21 while maintaining 100% accuracy, where nearly all of the detail was lost 
 in terms of what is visible to the human eye. Despite losing much of the image content, a suitable representation 
 for the classification task could be obtained, yielding the results summarized in Table~\ref{table:pca_lr_d0cw_res}.
 
-Table1: Three-class logistic regression classification accuracy for set D0CW-513XX. Principal components from cropped and downsampled {% latex %} 3 \times 15 {% endlatex %} px images as features.
+Table1: Three-class logistic regression classification accuracy for dataset X. Principal components from cropped and downsampled {% latex %} 3 \times 15 {% endlatex %} px images as features.
 
-Principal-components | #-Correct | Accuracy (\%)
+| Principal-components | #-Correct | Accuracy (%) |
 --- | --- | ---
 1 | 19 | 48.7 
 2 | 30 | 76.9 
@@ -222,20 +229,19 @@ __ENGG*4420__
 *Knowledge of control theory is not assumed, but systems concepts like position, velocity, and acceleration are fair game.*
 
 
-+ The set of weights {% latex %} \rho_1 {% endlatex %} resulted in 30\% less suspension deflection than {% latex %} \rho_2 {% endlatex %}
++ The set of weights {% latex %} \rho_1 {% endlatex %} resulted in 30% less suspension deflection than {% latex %} \rho_2 {% endlatex %}
 
-+ The maximum velocity occurs at t = x, halfway to the maximum suspension deflection \dots
++ The maximum velocity occurs at t = x, halfway to the maximum suspension deflection ...
 
-+ The maxium acceleration occurs at t=0, the instant the step is applied, and gradually decreases until \dots
++ The maxium acceleration occurs at t=0, the instant the step is applied, and gradually decreases until ...
 
 # Conclusion
 
-\emph{Try to find a clever way to avoid a boring boilerplate ending that begins with "In summary" or "To conclude". The Conclusion is not for leftovers, i.e things you couldn't fit into the discussion. You shouldn't need to reference figures nor equations. You are trying to take a step back, see the big picture, and make sense of what was found in the Results section. What were the most important findings, and why do they matter to your audience?} 
-
+*Try to find a clever way to avoid a boring boilerplate ending that begins with "In summary" or "To conclude". The Conclusion is not for leftovers, i.e things you couldn't fit into the discussion. You shouldn't need to reference figures nor equations. You are trying to take a step back, see the big picture, and make sense of what was found in the Results section. What were the most important findings, and why do they matter to your audience?*
 
 __ENGG*4420__
 
-+ Both passive and semi-active suspension systems were implemented in LabVIEW, and evaluated against the road disturbances from the formal design specifications. It was found that a semi-active system suppressed un-desireable transient behaviour, reducing peak vertical acceleration by 50\%, and settling time by 70\%, for step input. There was however, little benefit to the variable damper under steady state harmonic inputs which is analogous to driving at constant speed on a washboard road surface \dots
++ Both passive and semi-active suspension systems were implemented in LabVIEW, and evaluated against the road disturbances from the formal design specifications. It was found that a semi-active system suppressed un-desireable transient behaviour, reducing peak vertical acceleration by 50%, and settling time by 70%, for step input. There was however, little benefit to the variable damper under steady state harmonic inputs which is analogous to driving at constant speed on a washboard road surface ...
 
 + It was found that, among two sets of weights that penalized various performance characteristics in the LQR objective function, the set that more heavily penalized X resulted in Y.
 
@@ -245,8 +251,13 @@ __ENGG*4420__
 
 Imagine you own a small restaurant that serves appetizers, entrees, drinks, and deserts. Your profit margin is the highest on drinks and deserts, naturally you would like to sell as many drinks and deserts as possible. If the appetizers and entrees are lousy, do you think your patrons will order desert? If the water is foul, do you think your patrons will order cocktails?
 
-Illegible figures, lack of punctuation (e.g *let's eat Grandma* vs.~*let's eat, Grandma*), and ambiguous wording are all things that contribute to a poor dining experience in this mythical restaurant that is your report. If blurry figures and imprecise wording are the entrees, then verbosity is the free bread, or chips and salsa, at the restaurant. You want your patrons, the reader, to save room for desert, but verbosity will quickly satisfy their appetite for more.
+Illegible figures, lack of punctuation (e.g *let's eat Grandma* vs. *let's eat, Grandma*), and ambiguous wording are all things that contribute to a poor dining experience in this mythical restaurant that is your report. If blurry figures and imprecise wording are the entrees, then verbosity is the free bread, or chips and salsa, at the restaurant. You want your patrons, the reader, to save room for desert, but verbosity will quickly satisfy their appetite for more.
 
 ## Quoth the Raven Furthermore
 
 Watch out for your use of words like further, furthermore, and additionally. These words are like salt and pepper, their appropriate use can enhance the flavour of the meal, but if the waiter empties the contents of the salt and peper shakers on to your plate, the result is quite unpleasant. Nevermore should you begin a paragraph with furthermore.
+
+### To do
+
++ citations
++ equation numbering and references
