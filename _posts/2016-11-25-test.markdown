@@ -1,0 +1,41 @@
+---
+layout: post
+title:  "Test"
+date:   2016-11-25 13:48:26 -0500
+categories: writing
+---
+
+{% include mathjax_config %}
+
+# Introduction
+
+*Despite what you may have been led to believe, the __purpose__ or __problem description__ is not to "develop deep knowledge" or "learn how to use the software". The purpose is a specific, attainable, quantifiable goal, in terminology appropriate for the field, but that one of your peers not taking the class could be reasonably expected to understand. A generic example is provided below, while the notation __ENGG*4420__ is used to suggest examples for the Real Time course. Some examples have been reproduced or adapted from previous reports with permission.*
+
+$$
+\begin{align*}
+  & \phi(x,y) = \phi \left(\sum_{i=1}^n x_ie_i, \sum_{j=1}^n y_je_j \right)
+  = \sum_{i=1}^n \sum_{j=1}^n x_i y_j \phi(e_i, e_j) = \\
+  & (x_1, \ldots, x_n) \left( \begin{array}{ccc}
+      \phi(e_1, e_1) & \cdots & \phi(e_1, e_n) \\
+      \vdots & \ddots & \vdots \\
+      \phi(e_n, e_1) & \cdots & \phi(e_n, e_n)
+    \end{array} \right)
+  \left( \begin{array}{c}
+      y_1 \\
+      \vdots \\
+      y_n
+    \end{array} \right)
+\end{align*}
+$$
+
+$$
+\begin{equation} \label{eq:softmax}
+	y_i = \frac{exp(z_i)}{\sum\limits_j exp(z_j)}	
+\end{equation}
+$$
+
+The quotient rule is applied to \eqref{eq:softmax} to obtain the gradient, $\pdv{y_i}{z_j}$, for the case when $$j = i$$. Given that, $\pdv{\sum_j exp(z_j)}{z_j} = exp(z_i)$, and not labeling equations corresponding to intermediate steps, $\pdv{y_i}{z_j}$ can be evaluated as:
+
+\begin{equation} 
+	\frac{\partial{y_i}}{\partial{z_i}} = \frac{ exp(z_i) \cdot \sum_j exp(z_j) - exp(z_i) \cdot exp(z_i) }{ \big({\sum_j exp(z_j)}\big)^2}
+\end{equation}

@@ -13,7 +13,7 @@
 # you will see them accessed via {{ site.title }}, {{ site.email }}, and so on.
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
-safe: false
+#safe: false
 
 title: Learning of Things
 email: gallowaa@myschool.ca
@@ -30,10 +30,10 @@ markdown: kramdown
 theme: minima
 gems:
   - jekyll-feed
-  - jekyll-katex
+  #- jekyll-katex
 exclude:
   - Gemfile
   - Gemfile.lock
 
-katex:
-    path_to_js: "./_assets/katex.min.js"
+#katex:
+#    path_to_js: "./_assets/katex.min.js"
