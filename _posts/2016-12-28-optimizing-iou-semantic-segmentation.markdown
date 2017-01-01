@@ -84,4 +84,8 @@ A fairly low capacity model, the __VGG6xs-Fc6-k1-512-Deconv-k64s32__, was used t
 
 ![iou-vs-xent]({{site.url}}/img/vgg6xs-fc6-k1-512-deconv-k64s32-iou-vs-xent.png)
 
-My dataset has a class distribution of approximately 13% class 1 for (training) and 40% class 1 for (validation). In my very preliminary experiments, I have found the IoU method to be much more sensitive to selection of learning rate, even with the fairly robust ADAM gradient descent scheme. For instance the highest learning rate of 1e-3 led to an unusual instability where the the network always predicted class 0, with a few small hot zones of class 1. This checks out with the aforementioned class balance since we get approx 0% IoU for class 1, and 60% IoU for class 0 by always predicting class 0, which averages to 30%. It can therefore be said that the network has learned something useful for IoU scores above 30%.
+My dataset has a class distribution of approximately 13% class 1 for (training) and 40% class 1 for (validation). In my very preliminary experiments, I have found the IoU method to be much more sensitive to selection of learning rate, even with the fairly robust ADAM gradient descent scheme. For instance the highest learning rate of 1e-3 led to an unusual instability where the the network always predicted class 0, with a few small hot zones of class 1. This checks out with the aforementioned class balance since we get approx 0% IoU for class 1, and 60% IoU for class 0 by always predicting class 0, which averages to 30%. It can therefore be said that the network has learned something useful for mIoU scores above 30%.
+
+![iou-xent-step-5800]({{site.url}}/img/xent-vs-iou-stp5800.png)
+
+The above image shows from left to right, a sample input, network output at step 5800, and mask. The top uses the IoU loss from Listing 2, while the bottom uses cross-entropy loss from Listing 1. In general, the IoU loss recovers false-negatives but makes more false-positives.
