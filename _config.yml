@@ -35,5 +35,6 @@ exclude:
   - Gemfile.lock
   - vendor
 
+google_analytics: [UA-89717010-1]
 #katex:
 #    path_to_js: "./_assets/katex.min.js"
