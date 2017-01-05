@@ -90,4 +90,19 @@ Reducing the learning rate to 1e-4, adding dropout regularization, and increasin
 
 ![iou-xent-step-5800]({{site.url}}/img/xent-vs-iou-stp5800.png)
 
-The above image shows from left to right, a sample input, network output at step 5800, and mask. The top uses the IoU loss from Listing 2, while the bottom uses cross-entropy loss from Listing 1. In general, the IoU loss recovers false-negatives but makes more false-positives.
+The above image shows from left to right, a sample input, network output at step 5800, and mask. The top uses the IoU loss from Listing 2, while the bottom uses cross-entropy loss from Listing 1. In general, the IoU loss recovers false-negatives but makes more false-positives. The top is fuzzy around the object border because the output has not been thresholded.
+
+![1]({{site.url}}/img/vgg7xs-fc6-512-rgb-bs10-lr1e-4-2.png)
+
+Above, IoU loss, below, xent loss.
+
+![2]({{site.url}}/img/vgg7xs-fc6-512-rgb-bs10-lr1e-4-xent-2-.png)
+
+Below are some more samples drawn for validation images, with models trained to 11k steps.
+
+![4]({{site.url}}/img/vgg7xs-fc6-512-rgb-bs10-lr1e-4-4.png)
+
+Above, IoU loss gets 3/3 of class 1 objects, while below, xent loss identifies 2/3.
+
+![3]({{site.url}}/img/vgg7xs-fc6-512-rgb-bs10-lr1e-4-xent-4-.png)
+
