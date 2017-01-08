@@ -36,7 +36,7 @@ I(X) = \sum_{v \in V} X_v \times Y_v
 \end{equation}
 
 \begin{equation}
-U(X) = \sum_{v \in V} X_v + Y_v - X_V \times Y_v
+U(X) = \sum_{v \in V} X_v + Y_v - X_v \times Y_v
 \end{equation}
 
 \begin{equation}
