@@ -3,6 +3,7 @@ layout: default
 title:  "A Practical Checklist for Robust Machine Learning Models"
 date:   2018-02-25 15:48:26 -0500
 categories: writing
+comments: true
 ---
 
 # Introduction
@@ -216,4 +217,4 @@ for the field of machine learning if we can move beyond *defending against adver
 novel research area in and of itself, and instead focus on robustness __by design__. I'm not convinced we'll ever *fix*
 adversarial examples for current state-of-the-art models, but by reconsidering what it means to be state-of-the-art, 
 and using a principled approach, we __will__ build robust models that __do work well__ in practice, and that only fail
-gracefully.
+gracefully when they do fail.
