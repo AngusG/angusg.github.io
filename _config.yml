@@ -18,7 +18,7 @@
 title: Learning in Things
 email: gallowaa@myschool.ca
 description: > # this means to ignore newlines until "baseurl:"
-  Research blog on machine learning embedded in things.
+  Research blog on robust machine learning embedded in things.
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: jekyllrb
