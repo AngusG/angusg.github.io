@@ -27,7 +27,7 @@ Not so fast...
 A plethora of machine learning models, such as decision trees, SVMs, linear regression, and 
 deep neural networks (both feedforward and recurrent) have been found to fail spectacularly 
 when only subtle, imperceptible changes are applied to natural examples (e.g the images in the test set for a
-particular dataset). Inputs that have been perturbed, causing models to yield undesirable
+particular dataset). Such inputs that have been perturbed, causing models to yield undesirable
 behaviour are known as __adversarial examples__. 
 
 Undesirable behaviour could mean:
@@ -37,7 +37,7 @@ Undesirable behaviour could mean:
 - consistently making a specific incorrect prediction (CCT cameras that consistently confuse you with a wanted criminal, 
 or an autonomous car mistaking a toddler for a small animal)
 
-- confusing a nonsensical noisy input with a natural class (an unmanned aircraft or vehicle enters a low-visibility foggy area, triggering a dangerous emergency manoever to avoid what the system believes is a building.)
+- confusing a nonsensical noisy input with a natural class (an unmanned aircraft or vehicle enters a low-visibility foggy area, triggering a dangerous emergency manoever to avoid what the system believes is a white building.)
 
 - medical instrumentation yields a noisy or incomplete measurement, causing a model to be even *more* confident in its prediction, 
 when it ought to have *less* confidence (suggesting that a human should double check the result, or repair the machine).
@@ -47,15 +47,31 @@ implications extend far more broadly than this. Some may argue that these concer
 examples represent __worst case__ perturbations, and humans are known to experience similar phenomenon on occasion as well 
 (e.g optical illusions). Firstly, I don't believe human vision is necessarily the gold standard for machine vision, after all 
 we're trying to build autonomous cars that are safer than human drivers, not equally safe. More importantly, optical illusions
-with respect to human vision are few and far between, whereas adversarial examples exist for nearly *every possible input
-not spanned by the training set*. Humans are also very good at knowing when they should be uncertain, e.g for the famous Rabbit-duck
-illusion, regardless of which animal you see first, few would say that the *only* legitimate answer is one-hundred percent rabbit, and 
-zero percent duck. Yet this is exactly how deep neural nets fail when confronted with adversarial examples.
+with respect to human vision are few and far between, whereas adversarial examples exist for nearly *all possible inputs
+not spanned by the training set*. Humans are also very good at knowing when a situation is ambiguous, e.g for the famous Rabbit-duck
+illusion, regardless of which animal you see first, few would say that the *only* legitimate answer is "100% rabbit, and 0%
+duck. A more reasonable answer might be 50% rabbit, and 50% duck. Yet the former is exactly how deep neural nets tend to fail 
+when presented with adversarial examples, if rabbit __or__ duck are among the top two predictions at all.
 
-# What to do about it
+<p align="center">
+  <img src="{{site.url}}/img/Duck-Rabbit_illusion.jpg" width="260" height="175"/> 
+</p>
 
-1. Don't use orders of magnitude more parameters than the number of training examples, otherwise it almost certainly
-won't be robust. E.g a polynomial with equal parameters as data points can perfectly memorize the data, which won't generalize.
+That said, I really don't want to dwell on, or emphasize any further comparisons between adversarial examples and optical illusions 
+because I find it a stretch and generally unhelpful. The vast majority of adversarial examples we encounter are __anything but__ worst case
+in terms of both human perception, __and__ in terms of the model. Although we typically make use the *best information 
+available* (i.e the gradient of the loss wrt the input) when crafting the adversarial perturbation, the example itself 
+is seldom worst case because in practice we use a *very small* perturbation size, and in high-dimensions the difference 
+between natural and adversarial examples is usually imperceptible to humans. Sometimes the difference is even imperceptible 
+with respect to the quantization used by popular image storage formats, i.e less than that resolvable with 8-bits. My view is that
+adversarial examples commonly found in the literature are __valid examples__. We must do better.
+
+# What can we do about it
+
+1. Don't use orders of magnitude more parameters than the number of training examples, otherwise your model almost certainly
+won't be robust. E.g a polynomial with an equal number of parameters as data points can perfectly memorize the data, 
+a strategy that doesn't generalize. We don't quite know how precisely this intuition extends to say, convolutional neural networks, 
+but we can be pretty certain this logic still holds roughly speaking.
 
 2. Start with very high L2 weight decay, such that your model still learns *something*. Slowly turn down the weight decay 
 after proceeding through the following checklist. 
@@ -65,9 +81,12 @@ after proceeding through the following checklist.
 3. Look at the convolutional filters learned in the first few layers of the neural network, paying especially
 close attention to the first layer. Do they seem like general concepts or primitive image processing operations? 
 Do filters for primary colours and detecting edges or colour transitions emerge? If any of the filters still resemble
-random noise, your model is almost certainly not robust. If they aren't doing something useful, they should be
-exactly **zero**. Also, do play with the kernel size and stride, you would assume that these hyper-parameters have
-been well characterized, but not really.
+random noise, they are almost certainly hurting the robustness of your model. If they aren't contributing something 
+useful, they should be pruned away or exactly **zero**. This type of filter pruning is essentially what L2 regularization 
+accomplishes. Also, experiment with the kernel size and stride, you would assume 
+that these hyper-parameters have been well characterized, but in my experience, not really. For instance
+increasing the stride from 2 to 5 for a convolutional layer with sixteen 8x8 filters, followed by one linear layer, slightly improves 
+robustness a few percentage points for CIFAR-10 when subject to projected gradient descent (PGD) (unpublished result).
 
 4. Try to generate images with your model. That's right, a classifier can be used as a generative model (albeit one 
 with severe mode collapse). The most direct way to do this is to iteratively maximize one of the softmax probabilities
@@ -172,7 +191,9 @@ norm bound (e.g 2-norm, or infinity-norm). But this is not a comprehensive measu
 
 # Deep neural networks are over-parameterized 
 
-If you still aren't convinced that deep neural networks are highly over-parameterized with respect to their ability to generalize
+You will notice that it's extremely difficult to do well on any of these tests with 
+a state-of-the-art deep neural network. If you still aren't convinced that deep neural networks 
+are highly over-parameterized with respect to their ability to generalize
 in a meaningful way, perform a randomization test, similar to that from non-parametric statistics. 
 Randomly replace all the labels in your training set. A __good__ model should have a __challenging__ time 
 fitting randomly assigned labels, since there will be no useful correlation between the features and the label. 
@@ -194,5 +215,5 @@ This approach may feel cumbersome, and overly nitpicky, but I truly believe that
 for the field of machine learning if we can move beyond *defending against adversarial examples* as a 
 novel research area in and of itself, and instead focus on robustness __by design__. I'm not convinced we'll ever *fix*
 adversarial examples for current state-of-the-art models, but by reconsidering what it means to be state-of-the-art, 
-and using a principled approach, we __will__ build robust models that __do work well__ in practice, and that fail
-only gracefully.
+and using a principled approach, we __will__ build robust models that __do work well__ in practice, and that only fail
+gracefully.
