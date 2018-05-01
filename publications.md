@@ -7,6 +7,8 @@ permalink: ./publications.html
 
 Below is a list of my recent publications:
 
+* <p>Angus Galloway, Thomas Tanay, and Graham Taylor. <a href="https://arxiv.org/abs/1804.03308">Adversarial Training Versus Weight Decay</a>, submitted to the Conference on Uncertainty in Artificial Intelligence (UAI). <a href="./dl/galloway2018adversarial.bib">bibtex</a></p>
+
 * <p>Angus Galloway, Graham Taylor, and Medhat Moussa. <a href="https://arxiv.org/abs/1802.04457">Predicting Adversarial Examples with High Confidence</a>, submitted to the International Conference on Machine Learning (ICML), 2018. <a href="./dl/galloway2018predicting.bib">bibtex</a></p>
 
 * <p>Angus Galloway, Graham Taylor, and Medhat Moussa. <a href="https://arxiv.org/abs/1711.00449">Attacking Binarized Neural Networks</a>, to appear in the International Conference on Learning Representations (ICLR), 2018. <a href="./dl/galloway2018attacking.bib">bibtex</a></p>
