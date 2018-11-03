@@ -1,7 +1,7 @@
 # -----------------------------------------------------------------------------
 # Site settings
 # -----------------------------------------------------------------------------
-name: Angus Galloway
+title: Angus Galloway
 email: gallowaa
 description: > # this means to ignore newlines until "url:"
   Personal research blog.
