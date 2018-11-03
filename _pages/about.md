@@ -24,8 +24,7 @@ information theory, statistical physics, and elements of electrical and computer
 My current research interests are motivated by the “adversarial examples" problem,
 which limits opportunities for the responsible deployment of deep learning models
 in performance critical settings, e.g., commercial autopilots, or health care.
-More generally, I am interested in representation learning, interpretability,
-and causality.
+More generally, I am interested in representation learning, and causal modeling.
 
 Personal interests include electronics, traveling, cycling,
 and sailing.

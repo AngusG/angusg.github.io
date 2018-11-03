@@ -7,23 +7,27 @@ categories: writing
 
 {% include mathjax_config %}
 
+
 # Introduction
 
-*Despite what you may have been led to believe, the __purpose__ or __problem description__ is not to "develop deep knowledge" or "learn how to use the software". The purpose is a specific, attainable, quantifiable goal, in terminology appropriate for the field, but that one of your peers not taking the class could be reasonably expected to understand. A generic example is provided below, while the notation __ENGG*4420__ is used to suggest examples for the Real Time course. Some examples have been reproduced or adapted from previous reports with permission.*
+This is a technical writing guide intended for undergraduate engineering
+students at my school. Your mileage may vary.
+
+*The purpose is a specific, attainable, quantifiable goal, in terminology appropriate for the field, but that one of your peers not taking the class could be reasonably expected to understand. A generic example is provided below, while the notation __ENGG*4420__ is used to suggest examples for the Real Time course. Some examples have been reproduced or adapted from previous reports with permission.*
 
 ## Problem Description
 
-A comprehensive resource for scientific technical writing in undergraduate Engineering courses is absent. To address this information gap, a set of guidelines that make specific recommendations regarding the use of equations, figures, and writing style, are proposed.
+A resource for scientific technical writing in undergraduate Engineering courses is absent. To address this information gap, a set of guidelines that make specific recommendations regarding the use of equations, figures, and writing style, are proposed.
 
 __ENGG*4420__
 
 + The purpose of this lab was to implement a quarter-car suspension model in LabVIEW, and compare the performance of a passive system to that of a semi-active linear quadratic regulator (LQR) controlled system. Several performance measures were devised, including the vertical acceleration of the quarter car sprung mass, and suspension deflection, when the model was subject to sinusoidal and step inputs ...
 
-+ The model was to be architechted using a modular plant model with the LQR controller in a separate LabVIEW timed loop, such that the controller could be evaluated deterministically in LabVIEW RTOS, and in future easily scaled up to a full-car model.
++ The model was to be architechted using a modular plant model with the LQR controller in a separate LabVIEW timed loop, such that the controller could be evaluated deterministically in LabVIEW RTOS, and more easily scaled to a full-car model.
 
 # Background
 
-The background is full of equations, some in text, as in $ PV=nRT $, and some on their own, as in \eqref{eq:softmax}. Useful equations we wish to refer to later in text, are defined on their own line, centered, and with the equation number flush to the right.
+The background or theory section may contain equations, some in text, as in $ PV=nRT $, and some on their own, as in \eqref{eq:softmax}. Useful equations we wish to refer to later in text, are defined on their own line, centered, and with the equation number flush to the right.
 
 $$
 \begin{equation} \label{eq:softmax}
@@ -45,17 +49,17 @@ $$
 	\frac{\partial{y_i}}{\partial{z_i}} = \frac{ exp(z_i) \big( \sum_j exp(z_j) - exp(z_i) \big) }{ \sum_j exp(z_j) \sum_j exp(z_j) }
 $$
 
-\begin{equation} \label{eq:penultimate}	
+\begin{equation} \label{eq:penultimate}
 	\frac{\partial{y_i}}{\partial{z_i}} = \frac{exp(z_i)}{\sum_j exp(z_j)} \cdot \big( 1 - \frac{exp(z_i)}{\sum_j exp(z_j)} \big)
 \end{equation}
 
 Recognizing that \eqref{eq:penultimate} is composed of \eqref{eq:softmax}, \eqref{eq:penultimate} can be reduced to \eqref{eq:grad_i_eq_j}.
 
-\begin{equation} \label{eq:grad_i_eq_j}	
+\begin{equation} \label{eq:grad_i_eq_j}
 	\frac{\partial{y_i}}{\partial{z_i}} = y_i \cdot \big( 1 - y_i \big)
 \end{equation}
 
-*There is universal agreement in the Engineering community on formatting equations as above, however this is IEEE inspired in how equations are referred to in text, with only circle braces. You don't have to use IEEE style, but do always use circle braces. Equation (1), equation (1), eq. (1) are also accepted. One of the primary motivations for typesetting your own equations, when you could otherwise copy them from the Lab Manual, is that it makes you more aware of variables or terms that need to be explained to the reader.*
+*There is universal agreement in the Engineering community on formatting equations as above, however this is IEEE inspired in how equations are referred to in text, with only circle braces. You don't have to use IEEE style, but do always use circle braces. Equation (1), equation (1), eq. (1) are also accepted.*
 
 The class of image $f$, is taken to be that of the template, $t$, corresponding to the maximum correlation coefficient, $\gamma$, in the normalized 2D cross-correlation \cite{match_template} given by \eqref{eq:ncc}. In \eqref{eq:ncc}, $\overline{t}$ is the template mean, and $\overline{f}_{u,v}$ is the image mean in the region $f(x,y)$ spanned by $t$ centered at $u$,$v$.
 
@@ -89,17 +93,17 @@ Adding a variable damper, $B_{semi}$, with matrix N to \eqref{eq:ss-passive} res
 \end{equation}
 
 tions using only a handful of blocks. Examples of these were; a bumpy road simulated
-by a sine wave, a flat road simulated by a constant, and a sharp curb simulated by a step input. 
+by a sine wave, a flat road simulated by a constant, and a sharp curb simulated by a step input.
 
 + It is expensive to find the perfect road conditions to test on, and by using
 LabVIEW one can save a lot of time by simulating the input that is required rather than creating the physical real world conditions.
 
-+ LabVIEW allows one to simulate smaller components in isolation, prior 
++ LabVIEW allows one to simulate smaller components in isolation, prior
 to testing a complete system. In this lab, several assumptions are made regarding
-the tire/road interface, and vehicle body to simulate the suspension of a quarter car 
+the tire/road interface, and vehicle body to simulate the suspension of a quarter car
 section. This is very challenging to do in the real world where these assumptions to not hold.
 
-+ In this manner, a system can be thoroughly tested before going into production, 
++ In this manner, a system can be thoroughly tested before going into production,
 knowing how that system will behave under all road conditions and the specifications of all
 the components.
 
@@ -120,9 +124,9 @@ Figure 1: MLP cross entropy for training and test sets with four settings of mom
 
 The Reynold's number, Re, was read from Figure 2, with friction factor, $ f $, and relative roughness, $ k/d $, and given the assumptions stated in Section 2.
 
-Figure 2. Not reproduced due to excessive file size. Available **https://grantingram.wordpress.com/2009/04/22/moody-diagram/** 
+Figure 2. Not reproduced due to excessive file size. Available **https://grantingram.wordpress.com/2009/04/22/moody-diagram/**
 
-If someone else generated a figure that you would like to reuse, and you have their *permission*, state that it has been __reproduced__. It's not sufficient to cite the source of the figure, this implies that you created the figure yourself, you were simply inspired by their work. If you substantially modified someone else's figure, it's fair to say __adapted__ instead. If you generated a figure with someone else's data, you can simply cite the source of the data. The Python source code for Figure 2 is GNU GPL licensed, so it's fair game. 
+If someone else generated a figure that you would like to reuse, and you have their *permission*, state that it has been __reproduced__. It's not sufficient to cite the source of the figure, this implies that you created the figure yourself, you were simply inspired by their work. If you substantially modified someone else's figure, it's fair to say __adapted__ instead. If you generated a figure with someone else's data, you can simply cite the source of the data. The Python source code for Figure 2 is GNU GPL licensed, so it's fair game.
 
 __ENGG*4420__
 
@@ -161,10 +165,10 @@ void counting_task(IOdevices_control *IOdevices) {
 	INT8U err1, err2;
 	INT8S count_i = -1;
 
-	while (1) 
+	while (1)
 	{
 		OSSemPend(LCD_count, 0, &err1);
-		if(OS_NO_ERR == err1) 
+		if(OS_NO_ERR == err1)
 		{
 			count_i = (count_i + 1) % COUNT_MAX;
 			printf("%4d\n", count_i);
@@ -185,19 +189,19 @@ Figure 3: (*Left*) Output of Canny edge detector with Gaussian smoothing paramet
 
 An encouraging result was obtained when Listing 1 was run with $ds\_v$, $ds\_h$ = 2, and keeping only the first three principal components, yielding 100% accuracy. For the sake of minimizing the algorithm execution time, the downsampling factors $ds\_v$ and $ds\_h$ were incremented by hand in steps of one until the accuracy began to drop. It was found that $ds\_v$ and $ds\_h$ could be increased all the way to 21 while maintaining 100% accuracy, where nearly all of the detail was lost in terms of what is visible to the human eye. Despite losing much of the image content, a suitable representation for the classification task could be obtained, yielding the results summarized in Table 1.
 
-Table1: Three-class logistic regression classification accuracy for dataset X. Principal components from cropped and downsampled $ 3 \times 15 $ px images as features.
+Table 1: Three-class logistic regression classification accuracy for dataset X. Principal components from cropped and downsampled $ 3 \times 15 $ px images as features.
 
 | Principal-components | #-Correct | Accuracy (%) |
 --- | --- | ---
-1 | 19 | 48.7 
-2 | 30 | 76.9 
-3 | 37 | 94.9 
-4 | 36 | 92.3 
-5 | 36 | 92.3 
-6 | 37 | 94.9 
-7 | 37 | 94.9 
-8 | 38 | 97.4 
-9 | 38 | 97.4 
+1 | 19 | 48.7
+2 | 30 | 76.9
+3 | 37 | 94.9
+4 | 36 | 92.3
+5 | 36 | 92.3
+6 | 37 | 94.9
+7 | 37 | 94.9
+8 | 38 | 97.4
+9 | 38 | 97.4
 10 | 39 | 100.0
 
 __ENGG*4420__
@@ -225,13 +229,26 @@ __ENGG*4420__
 
 ## The Restaurant
 
-Imagine you own a small restaurant that serves appetizers, entrees, drinks, and deserts. Your profit margin is the highest on drinks and deserts, naturally you would like to sell as many drinks and deserts as possible. If the appetizers and entrees are lousy, do you think your patrons will order desert? If the water is foul, do you think your patrons will order cocktails?
+Imagine you own a small restaurant that serves appetizers, entrees, drinks, and
+deserts. Your profit margin is the highest on drinks and deserts, naturally you
+would like to sell as many drinks and deserts as possible. If the appetizers and
+entrees are lousy, patrons are unlikely to order desert. If the water is foul,
+do you think your patrons will order cocktails?
 
-Illegible figures, lack of punctuation (e.g *let's eat Grandma* vs. *let's eat, Grandma*), and ambiguous wording are all things that contribute to a poor dining experience in this mythical restaurant that is your report. If blurry figures and imprecise wording are the entrees, then verbosity is the free bread, or chips and salsa, at the restaurant. You want your patrons, the reader, to save room for desert, but verbosity will quickly satisfy their appetite for more.
+Illegible figures, lack of punctuation (e.g *let's eat Grandma* vs. *let's eat,
+Grandma*), and ambiguous wording are all things that contribute to a poor dining
+experience in this mythical restaurant that is your report. If blurry figures
+and imprecise wording are the entrees, then verbosity is the free bread, or
+chips and salsa, at the restaurant. You want your patrons, the reader, to save
+room for desert, but verbosity will quickly satisfy their appetite for more.
 
 ## Quoth the Raven Furthermore
 
-Watch out for your use of words like further, furthermore, and additionally. These words are like salt and pepper, their appropriate use can enhance the flavour of the meal, but if the waiter empties the contents of the salt and peper shakers on to your plate, the result is quite unpleasant. Nevermore should you begin a paragraph with furthermore.
+Watch out for your use of words like further, furthermore, and additionally.
+These words are like salt and pepper, their appropriate use can enhance the
+flavour of the meal, but if the waiter empties the contents of the salt and
+pepper shakers on to your plate, the result is quite unpleasant. Nevermore
+should you begin a paragraph with furthermore.
 
 ### To do
 
