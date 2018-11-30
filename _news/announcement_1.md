@@ -4,4 +4,4 @@ date: 2018-10-09 15:59:00-0400
 inline: true
 ---
 
-I am now a reviewer for the International Journal of Computer Vision (IJCV).
+I am now a reviewer for the *International Journal of Computer Vision* (IJCV)
