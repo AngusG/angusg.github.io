@@ -9,11 +9,11 @@ categories: writing
 
 # Introduction
 
-Recently, {% cite hoffman2016elbo --file blog-article %} proposed an elegant
-decomposition of the popular *evidence lower bound*, or ELBO, objective commonly
+{% cite hoffman2016elbo --file blog-article %} proposed an elegant
+decomposition of the *evidence lower bound*, or ELBO, objective commonly
 used when training unsupervised latent variable models characterized by a
 probabilistic decoder $p(x | z)$ and prior $p(z)$ on latent
-variables $z$. The model has the form:
+variables $z$. The model has the familiar form:
 
 \begin{equation}
 p_{\theta}(x) = \int p_{\theta} (x | z) p(z) dz
@@ -25,7 +25,7 @@ A common way of writing the ELBO objective is like,
 L({\theta}, {\phi}) = \frac{1}{N} \sum_{n=1}^{N} \mathbb{E}_{q(z_n | x_n)}[\log (p(x_n|z_n))] - KL[q(z_n | x_n) \parallel p(z_n)]
 \end{equation}
 
-the __average term-by-term reconstruction minus the KL divergence to the prior__.
+which they call the __average term-by-term reconstruction minus the KL divergence to the prior__.
 
 \begin{equation}
 \frac{1}{N} \sum_{n=1}^{N} KL[q(z | z_n) \parallel p(z_n)] = D_{KL}(q(z) \parallel p(z)) + log(N) - \mathbb{E}_{q(z)}[H[q(n|z)]]
