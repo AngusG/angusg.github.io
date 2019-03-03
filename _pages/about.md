@@ -16,15 +16,13 @@ news: true
 social: true
 ---
 
-I’m interested in machine learning theory, so that models can be deployed
-with confidence in practice.
-This has led me to take an inter-disciplinary approach, bridging
-information theory, statistical physics, and elements of electrical and computer engineering.
+I’m interested in deep learning theory and methodology, so that models can be
+deployed with relevant performance guarantees in practice. I'm particularly
+interested in the application of information theory to deep learning, and in the
+service of Engineering standards for its use.
 
-My current research interests are motivated by the “adversarial examples" problem,
-which limits opportunities for the responsible deployment of deep learning models
-in performance critical settings, e.g., commercial autopilots, or health care.
-More generally, I am interested in representation learning, and causal modeling.
-
-Personal interests include electronics, traveling, cycling,
-and sailing.
+My current research interests are motivated by the “adversarial examples"
+phenomenon, which limits opportunities for the responsible deployment of deep
+learning models in performance-critical settings, e.g., commercial autopilots,
+or medical imaging. More generally, I am interested in privacy and security,
+causal discovery, and embedded systems.
