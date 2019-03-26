@@ -16,8 +16,8 @@ news: true
 social: true
 ---
 
-I’m interested in deep learning theory and methodology, so that models can be
-deployed with relevant performance guarantees in practice. I'm particularly
+I work on deep learning theory and methodology, so that models can be
+deployed with useful performance guarantees in practice. I'm particularly
 interested in the application of information theory to deep learning, and in the
 service of Engineering standards for its use.
 
