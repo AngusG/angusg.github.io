@@ -5,4 +5,4 @@ inline: true
 ---
 
 Awarded a Dean's Graduate Scholarship from the College of Engineering & Physical
-Sciences at the University of Guelph.
+Sciences at the University of Guelph, and an Ontario Graduate Scholarship.
