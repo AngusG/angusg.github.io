@@ -6,7 +6,7 @@ description: PhD Student in Systems Engineering
 
 profile:
   align: right
-  image: DSC02843.JPG
+  image: DSC02843_small.JPG
   address: >
     <p>University of Guelph</p>
     <p>Vector Institute</p>
