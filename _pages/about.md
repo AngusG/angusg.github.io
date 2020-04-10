@@ -16,13 +16,19 @@ news: true
 social: true
 ---
 
-I work on deep learning theory and methodology, so that models can be
-deployed with useful performance guarantees in practice. I'm particularly
-interested in the application of information theory to deep learning, and in the
-service of Engineering standards for its use.
+I am to understand the principles of deep neural network generalization and
+robustness to distribution shift, so that models may be deployed with relevant
+performance guarantees. I'm particularly interested in the application of
+information theory to deep learning in the service of Engineering standards
+and best practices.
 
-My current research interests are motivated by the “adversarial examples"
-phenomenon, which limits opportunities for the responsible deployment of deep
-learning models in performance-critical settings, e.g., commercial autopilots,
-or medical imaging. More generally, I am interested in privacy and security,
-causal discovery, and embedded systems.
+My research interests are motivated by the “adversarial examples"
+phenomenon, whereby models can be fooled by seemingly unimportant input
+manipulations. This phenomenon poses a challenge to traditional interpretations
+of features extracted by deep neural networks, and limits their use in the
+sciences and performance-critical settings.
+
+Toward trustworthy machine learning and artificial intelligence, I
+believe that more systematic ethical oversight is required to maintain the
+privilege of self-regulation, trust in the field, and ultimately that the
+public interest remains at the forefront of our research.
