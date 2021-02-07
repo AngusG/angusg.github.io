@@ -18,7 +18,7 @@ social: true
 My research aims to identify properties of deep neural networks (DNNs) that
 confer generalization and robustness to distribution shift. I believe that understanding
 the information-theoretic limitations of [Deep Learning](https://www.deeplearningbook.org/)
-is a key step to these ends, and may help establish predictive performance guarantees
+is a key step to this end, and may help establish predictive performance guarantees
 for safety-critical settings.
 
 My research interests are motivated by the
