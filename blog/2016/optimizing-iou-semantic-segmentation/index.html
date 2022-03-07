@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title>Angus Galloway | Optimize IoU for Semantic Segmentation in TensorFlow</title>
+  <meta name="description" content="Personal research blog.
+">
+
+  <link rel="shortcut icon" href="/assets/img/favicon.ico">
+
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="canonical" href="/blog/2016/optimizing-iou-semantic-segmentation/">
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    
+    <span class="site-title">
+        
+        Angus Galloway
+        <!--<strong>Angus</strong> Galloway-->
+    </span>
+    
+
+    <nav class="site-nav">
+      <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+              <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+              <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+      <div class="trigger">
+        <!-- About -->
+        <a class="page-link" href="/">about</a>
+
+        <!-- Blog -->
+        <a class="page-link" href="/blog/">blog</a>
+
+        <!-- Pages -->
+        
+          
+        
+          
+        
+          
+        
+          
+            <a class="page-link" href="/publications/">publications</a>
+          
+        
+          
+        
+          
+        
+
+        <!-- CV link -->
+        <!-- <a class="page-link" href="/assets/pdf/angus_galloway_cv.pdf">vitae</a> -->
+
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    TeX: {
+      equationNumbers: {
+        autoNumber: "AMS"
+      }
+    },
+    tex2jax: {
+      inlineMath: [ ['$','$'], ['\(', '\)'] ],
+      displayMath: [ ['$$','$$'] ],
+      processEscapes: true,
+    }
+  });
+</script>
+
+<script type="text/javascript" async="" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+<h1 id="introduction">Introduction</h1>
+
+<p>Intersection over union (IoU) is a common metric for assessing performance in semantic segmentation tasks. In a sense, (IoU) is to segmentation what an F1 score is to classification. Both are non-differentiable, and not normally optimized directly. Optimizing cross entropy loss is a common proxy for these scores, that usually leads to decent performance, provided everything else has been setup correctly, e.g regularization, stopping training at an appropriate time. Divising a pixelwise loss function, such that a deep network performs segmentation, with the mindset of classification and cross-entropy, we get something like this:</p>
+
+<p>Listing 1: TensorFlow pixelwise softmax cross-entropy loss</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># logits has original shape [batch_size x img h x img w x FLAGS.num_classes]</span>
+<span class="n">logits</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">logits</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">FLAGS</span><span class="o">.</span><span class="n">num_classes</span><span class="p">))</span>
+<span class="n">trn_labels</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">trn_labels_batch</span><span class="p">,</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">cross_entropy</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">sparse_softmax_cross_entropy_with_logits</span><span class="p">(</span><span class="n">logits</span><span class="p">,</span><span class="n">trn_labels</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s">'x_ent'</span><span class="p">)</span>
+<span class="n">loss</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">(</span><span class="n">cross_entropy</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">'x_ent_mean'</span><span class="p">)</span>
+<span class="n">train_op</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">AdamOptimizer</span><span class="p">(</span><span class="n">FLAGS</span><span class="o">.</span><span class="n">learning_rate</span><span class="p">)</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span><span class="n">global_step</span><span class="o">=</span><span class="n">global_step</span><span class="p">)</span>
+
+<span class="c"># For inference/visualization, prediction is argmax across output 'channels'</span>
+<span class="n">prediction</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">logits</span><span class="p">),</span> <span class="n">tf</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">vgg</span><span class="o">.</span><span class="n">up</span><span class="p">)),</span> <span class="n">dimension</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>Recently, <a href="http://www.cs.umanitoba.ca/~ywang/papers/isvc16.pdf" title="Optimizing Intersection-Over-Union in Deep
+Neural Networks for Image Segmentation">Y.Wang et al</a>, proposed a straightforward scheme for optimizing approximate IoU directly, but their approach currently only supports binary, e.g foreground/background output. This was fine for my own dataset, to be intrdouced later, but it’s certainly worth looking at how this can be extended to multi-output, which is already handled by Listing 1.</p>
+
+<p>The equations from <a href="http://www.cs.umanitoba.ca/~ywang/papers/isvc16.pdf" title="Optimizing Intersection-Over-Union in Deep
+Neural Networks for Image Segmentation">Y.Wang et al</a> are reproduced here because i’ll convert them to TensorFlow after, but check out their paper for
+more detail and empirical results on various PASCAL VOC2010/2011 objects.</p>
+
+<p>\begin{equation}
+I(X) = \sum_{v \in V} X_v \times Y_v
+\end{equation}</p>
+
+<p>\begin{equation}
+U(X) = \sum_{v \in V} X_v + Y_v - X_v \times Y_v
+\end{equation}</p>
+
+<p>\begin{equation}
+IoU = \frac{I(X)}{U(X)}
+\end{equation}</p>
+
+<p>\begin{equation}
+loss = 1.0 - IoU
+\end{equation}</p>
+
+<p>Listing 2: TensorFlow IoU loss, not shown is the sigmoid non-linearity at output in lieu of ReLU.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="s">'''
+now, logits is output with shape [batch_size x img h x img w x 1]
+and represents probability of class 1
+'''</span>
+<span class="n">logits</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">logits</span><span class="p">,</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">trn_labels</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">trn_labels_batch</span><span class="p">,</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+<span class="s">'''
+Eq. (1) The intersection part - tf.mul is element-wise,
+if logits were also binary then tf.reduce_sum would be like a bitcount here.
+'''</span>
+<span class="n">inter</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">mul</span><span class="p">(</span><span class="n">logits</span><span class="p">,</span><span class="n">trn_labels</span><span class="p">))</span>
+
+<span class="s">'''
+Eq. (2) The union part - element-wise sum and multiplication, then vector sum
+'''</span>
+<span class="n">union</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">logits</span><span class="p">,</span><span class="n">trn_labels</span><span class="p">),</span><span class="n">tf</span><span class="o">.</span><span class="n">mul</span><span class="p">(</span><span class="n">logits</span><span class="p">,</span><span class="n">trn_labels</span><span class="p">)))</span>
+
+<span class="c"># Eq. (4)</span>
+<span class="n">loss</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">constant</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">),</span><span class="n">tf</span><span class="o">.</span><span class="n">div</span><span class="p">(</span><span class="n">inter</span><span class="p">,</span><span class="n">union</span><span class="p">))</span>
+
+<span class="n">train_op</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">AdamOptimizer</span><span class="p">(</span><span class="n">FLAGS</span><span class="o">.</span><span class="n">learning_rate</span><span class="p">)</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span><span class="n">global_step</span><span class="o">=</span><span class="n">global_step</span><span class="p">)</span>
+
+<span class="c"># For inference/visualization</span>
+<span class="n">valid_prediction</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">logits</span><span class="p">,</span><span class="n">tf</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">vgg</span><span class="o">.</span><span class="n">up</span><span class="p">))</span>
+</code></pre></div></div>
+
+<p>In Listing 1, the network output was ReLU’d and softmax’d, so the final output was nearly one-hot in the output channels, or (class) dimension, hence the argmax to compare the maximally activated channel with an integer in the training label. The argmax disappears in Listing 2 because we network output passes through a sigmoid, so we just take the logits as a face value preference for either class 0 or class 1.</p>
+
+<p>A fairly low capacity model, the <strong>VGG6xs-Fc6-k1-512-Deconv-k64s32</strong>, was used to do an apples to apples comparison of the two loss functions. This is my own naming convention, but essentially we have: the front end of a VGG16 trimmed down to 5 convolution layers, keeping one of each differently sized layer, number of filters in the first layer reduced from 64 to 16, but still doubling in each subsequent layer, ‘Fc6’ has kernel size 1x1 instead of 7x7, and 512 hiddens, a single deconvolution layer with 64x64 kernel and stride 32.</p>
+
+<p><img src="/img/vgg6xs-fc6-k1-512-deconv-k64s32-iou-vs-xent.png" alt="iou-vs-xent" /></p>
+
+<p>My <a href="https://dataverse.scholarsportal.info/dataset.xhtml?persistentId=doi:10.5683/SP/NTUOK9">dataset</a> has a class distribution of approximately 13% class 1 for (training) and 40% class 1 for (validation). In my very preliminary experiments, I have found the IoU method to be much more sensitive to selection of learning rate and batch size, even with the fairly robust ADAM gradient descent scheme. A fairly high learning rate of 1e-3 led to an unusual instability where the the network always predicted class 0, with a few small point sources of class 1, resulting in a flatline validation mIoU of 31%. This checks out with the aforementioned class balance since we get approx 0% IoU for class 1, and 60% IoU for class 0 by always predicting class 0, which averages to 30%. It can therefore be said that the network has learned something useful for mIoU scores above 30%.</p>
+
+<p>Reducing the learning rate to 1e-4, adding dropout regularization, and increasing mini-batch size to 10, resulted in a fairly nice comparison of the two loss functions. The only difference between the solid and dashed lines in the above figure is that ‘IoU-loss’ was trained with the loss function from Listing 2, while ‘Xent-loss’ was trained with cross-entropy softmax loss as in Listing 1. Optimizing IoU directly resulted in a <strong>3.42</strong>% boost in mIoU on my validation set. This difference will likely grow when a higher capacity model is used.</p>
+
+<p><img src="/img/xent-vs-iou-stp5800.png" alt="iou-xent-step-5800" /></p>
+
+<p>The above image shows from left to right, a sample input, network output at step 5800, and mask. The top uses the IoU loss from Listing 2, while the bottom uses cross-entropy loss from Listing 1. In general, the IoU loss recovers false-negatives but makes more false-positives. The top is fuzzy around the object border because the output has not been thresholded.</p>
+
+<p><img src="/img/vgg7xs-fc6-512-rgb-bs10-lr1e-4-2.png" alt="1" /></p>
+
+<p>Above, IoU loss, below, xent loss.</p>
+
+<p><img src="/img/vgg7xs-fc6-512-rgb-bs10-lr1e-4-xent-2-.png" alt="2" /></p>
+
+<p>Below are some more samples drawn for validation images, with models trained to 11k steps.</p>
+
+<p><img src="/img/vgg7xs-fc6-512-rgb-bs10-lr1e-4-4.png" alt="4" /></p>
+
+<p>Above, IoU loss gets 3/3 of class 1 objects, while below, xent loss identifies 2/3.</p>
+
+<p><img src="/img/vgg7xs-fc6-512-rgb-bs10-lr1e-4-xent-4-.png" alt="3" /></p>
+
+      </div>
+    </div>
+
+    <footer>
+
+  <div class="wrapper">
+    &copy; Copyright 2022 .
+    Powered by <a href="http://jekyllrb.com/" target="_blank">Jekyll</a> with <a href="https://github.com/alshedivat/al-folio">al-folio</a> theme. Hosted by <a href="https://pages.github.com/" target="_blank">GitHub Pages</a>.
+
+    
+  </div>
+
+</footer>
+
+
+    <!-- Load jQuery -->
+<script src="//code.jquery.com/jquery-1.12.4.min.js"></script>
+
+<!-- Load Common JS -->
+<script src="/assets/js/common.js"></script>
+
+
+<!-- Load KaTeX -->
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.js"></script>
+<script src="/assets/js/katex.js"></script>
+
+
+
+
+<!-- Include custom icon fonts -->
+<link rel="stylesheet" href="/assets/css/fontawesome-all.min.css">
+<link rel="stylesheet" href="/assets/css/academicons.min.css">
+
+<!-- Google Analytics -->
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-XXXXXXXXX', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+  </body>
+
+</html>

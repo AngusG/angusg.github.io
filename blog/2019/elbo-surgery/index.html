@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title>Angus Galloway | ELBO surgery</title>
+  <meta name="description" content="Personal research blog.
+">
+
+  <link rel="shortcut icon" href="/assets/img/favicon.ico">
+
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="canonical" href="/blog/2019/elbo-surgery/">
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    
+    <span class="site-title">
+        
+        Angus Galloway
+        <!--<strong>Angus</strong> Galloway-->
+    </span>
+    
+
+    <nav class="site-nav">
+      <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+              <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+              <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+      <div class="trigger">
+        <!-- About -->
+        <a class="page-link" href="/">about</a>
+
+        <!-- Blog -->
+        <a class="page-link" href="/blog/">blog</a>
+
+        <!-- Pages -->
+        
+          
+        
+          
+        
+          
+        
+          
+            <a class="page-link" href="/publications/">publications</a>
+          
+        
+          
+        
+          
+        
+
+        <!-- CV link -->
+        <!-- <a class="page-link" href="/assets/pdf/angus_galloway_cv.pdf">vitae</a> -->
+
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    TeX: {
+      equationNumbers: {
+        autoNumber: "AMS"
+      }
+    },
+    tex2jax: {
+      inlineMath: [ ['$','$'], ['\(', '\)'] ],
+      displayMath: [ ['$$','$$'] ],
+      processEscapes: true,
+    }
+  });
+</script>
+
+<script type="text/javascript" async="" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+<h1 id="introduction">Introduction</h1>
+
+<p><a href="#hoffman2016elbo">(Hoffman &amp; Johnson, 2016)</a> proposed an elegant
+decomposition of the <em>evidence lower bound</em>, or ELBO, objective commonly
+used to train unsupervised latent-variable models characterized by a
+probabilistic decoder $p(x | z)$ and prior $p(z)$ over latent
+variable $z$. Such models have the form:</p>
+
+<p>\begin{equation}
+p_{\theta}(x) = \int p_{\theta} (x | z) p(z) dz
+\end{equation}</p>
+
+<p>A common way of writing the ELBO objective, for variational
+approximation $q_{\phi}(z | x)$ to the true posterior
+$p_{\theta}(z | x)$ is like,</p>
+
+<p>\begin{equation} \label{eq:term-by-term}
+L({\theta}, {\phi}) = \frac{1}{N} \sum_{n=1}^{N} \mathbb{E}_{q(z_n | x_n)}[\log (p(x_n|z_n))] - KL(q(z_n | x_n) \parallel p(z_n))
+\end{equation}</p>
+
+<p>which they call the <strong>average term-by-term reconstruction minus the KL divergence to the prior</strong>,
+where $n$ indexes observations.
+This leads to a natural question: what is the best value for the KL term to
+take? This can be interpreted as a regularizer that is minimized when
+$q(z_n | x_n) = p(z_n)$, which
+encourages maximum use of the code space $z$ by raising the entropy of
+$q(z)$ to that of the prior. Aside: one of the most common choices for this
+prior is a multivariate normal: the maximum entropy distribution for a given
+variance.
+Now, clearly we do not want this KL term to be exactly zero, as
+this implies independence between inputs $x_n$ and their codes $z_n$. For
+examples of this behaviour see the <em>autodecoder</em> in
+<a href="#alemi2018fixing">(Alemi et al., 2018)</a>, where the generated samples are
+of high quality, but do not match the class of the input source.</p>
+
+<p>Breaking up the KL divergence term:</p>
+
+<p>\begin{equation}
+\frac{1}{N} \sum_{n=1}^{N} KL[q(z_n | x_n) \parallel p(z_n)] = D_{KL}(q(z) \parallel p(z)) + \log(N) - \mathbb{E}_{q(z)}[H[q(n|z)]]
+\end{equation}</p>
+
+<p>Notice that $\log(N) - \mathbb{E}_{q(z)}[H[q(n|z)]]$, looks an awful lot like
+the mutual information of the form $I(n;z)=H(n)-H(n|z)$, where we’re treating
+the indices $n$ to the $N$ input samples $X_N$ as a uniform random variable,
+the maximum entropy distribution for a constraint on the values.</p>
+
+<p>Thus, we have:</p>
+
+<p>\begin{equation}
+ = D_{KL}(q(z) \parallel p(z)) + I(n;z)
+\end{equation}</p>
+
+<p>where $q(z)$ <em>can</em> safely be made close to the prior without losing modeling
+power.</p>
+
+<h2 id="derivation">Derivation</h2>
+
+<p>Using $p(z | n) = p(z)$, $q(z | n) = q(z | x_n)$, $q(n) = p(n) = 1/N$,</p>
+
+<p>\begin{equation}
+\frac{1}{N} \sum_{n=1}^{N} KL(q(z_n | x_n) \parallel p(z_n)) = \sum_n q(n, z) \log \frac{q(n, z)}{p(n, z)}
+\end{equation}</p>
+
+<script type="math/tex; mode=display">= \sum_n q(n) q(z|n) \log \frac{q(z) q(n | z)}{p(z) p(n)}</script>
+
+<p>Now, splitting up the log</p>
+
+<script type="math/tex; mode=display">= \sum_n q(n) q(z|n) \bigg( \log \frac{q(z)}{p(z)} + \log \frac{q(n | z)}{p(n)} \bigg)</script>
+
+<!-- $$ = \sum_n q(n) q(z|n) \bigg( \log \frac{q(z)}{p(z)} + \log \frac{q(n | z)}{p(n)} \bigg)$$ -->
+
+<p>\begin{equation}
+ = KL(q(z) \parallel p(z)) + \mathbb{E}_{q(z)}[KL(q(n | z) \parallel p(n))]
+\end{equation}</p>
+
+<p>With Bayes rule $q(n)q(z|n) = q(z)q(n|z)$, and expanding some terms</p>
+
+<script type="math/tex; mode=display">= KL(q(z) \parallel p(z)) + \sum_n q(z)q(n | z) \bigg( \log \frac{q(n | z)}{p(n)} \bigg)</script>
+
+<script type="math/tex; mode=display">= KL(q(z) \parallel p(z)) + \sum_n q(z) \underbrace{q(n | z) \log q(n | z)}_\text{-ve cond. entropy}
+  -\underbrace{\sum_n \log \frac{1}{p(n)}}_\text{entropy of n}</script>
+
+<p>Since we have a uniform distribution over $n$, the i.i.d. sample indices, $H(n) = \log N$.</p>
+
+<p>\begin{equation}
+ = KL(q(z) \parallel p(z)) + (\log N - \mathbb{E}_{q(z)}[H(q(n|z))])
+\end{equation}</p>
+
+<p>\begin{equation}
+ = KL(q(z) \parallel p(z)) + I(n; z)
+\end{equation}</p>
+
+<p>Getting back to the original question, we now have clear expressions for the
+quantities we want to minimize: $KL(q(z) \parallel p(z))$, and maximize:
+$I(n; z)$.</p>
+
+<p>Now, we have some context for an inequality from
+<a href="#alemi2018fixing">(Alemi et al., 2018)</a>, where D is distortion—the
+first term in Eq.\eqref{eq:term-by-term}—and H is $H(X)$, the entropy of the
+source distribution. R is the rate, the description length or average number of
+bits transmitted—but not necessarily received.</p>
+
+<p>\begin{equation}
+H - D \leq I(X; Z) \leq R
+\end{equation}</p>
+
+<p>Since $KL(q(z) \parallel p(z))$ can be computed analytically for known
+parametric families, we have a way of estimating $I(X; Z)$ by simply subtracting
+this term from the ‘‘KL divergence to the prior’’ in Eq.\eqref{eq:term-by-term},
+and replacing each $x$ by its index $n$ from the finite training sample.</p>
+
+<p>Sweeping $\beta$ as in the $\beta-VAE$ obtained by breaking up
+Eq.\eqref{eq:term-by-term}, we obtain a concave rate distortion RD curve.
+This says that reducing distortion, which in this case can be interpreted as
+increasing the quality of the reconstructed images, is only possible by
+increasing the complexity of the representations, and vice versa, reducing the
+rate is only possible if willing to accept higher distortion.</p>
+
+<p>What are the practical consequences of this trade-off? After all, the cost of
+bandwidth and computing is at an all time low, can’t we just use arbitrarily high
+complexity representations to minimize distortion? No, not if we’d like to use
+the generative model for one of its main functions: to generate novel
+samples simply by sampling from the prior. See the ‘‘autoencoder’’ example in
+Fig. 4 b) of <a href="#alemi2018fixing">(Alemi et al., 2018)</a> where R=156.0 and
+D=4.8. Thus, we want to be somewhere in between the ‘‘semantic encoder’’ and
+‘‘semantic decoder’’ which corresponds to places on the curve where both R and D
+are changing rapidly. This makes the model capable of both reconstructing
+natural inputs, and ensures most of the code space maps to plausible samples
+when sampling from the prior unconditionally.</p>
+
+<!-- <a href="#mcallester2018formal">(McAllester &amp; Stratos, 2018)</a> -->
+
+<p><img src="/img/vae_mnist.png" alt="1" /></p>
+
+<p>RD curve has units in bits, whereas <a href="#alemi2018fixing">(Alemi et al., 2018)</a>
+are in nats, $120$ bits $\times ln2 \approx 83$ nats.
+<a href="#alemi2018fixing">(Alemi et al., 2018)</a> obtain $D=80.6$ nats for $R=0$.</p>
+
+<h1 id="references">References</h1>
+
+<ol class="bibliography"><li>
+
+<div id="alemi2018fixing">
+  
+    <span class="title">Fixing a Broken ELBO</span>
+    <span class="author">
+      
+        
+          
+            
+              
+                Alemi, Alexander,
+              
+            
+          
+        
+      
+        
+          
+            
+              
+                Poole, Ben,
+              
+            
+          
+        
+      
+        
+          
+            
+              
+                Fischer, Ian,
+              
+            
+          
+        
+      
+        
+          
+            
+              
+                Dillon, Joshua,
+              
+            
+          
+        
+      
+        
+          
+            
+              
+                Saurous, Rif A.,
+              
+            
+          
+        
+      
+        
+          
+            
+              
+                and Murphy, Kevin
+              
+            
+          
+        
+      
+    </span>
+
+    <span class="periodical">
+    
+      <em>In International Conference on Machine Learning</em>
+    
+    
+      2018
+    
+    </span>
+  
+
+  <span class="links">
+  
+  
+  
+  
+  
+  
+  
+  
+  </span>
+
+  <!-- Hidden abstract block -->
+  
+</div>
+</li>
+<li>
+
+<div id="mcallester2018formal">
+  
+    <span class="title">Formal Limitations on the Measurement of Mutual Information</span>
+    <span class="author">
+      
+        
+          
+            
+              
+                McAllester, David,
+              
+            
+          
+        
+      
+        
+          
+            
+              
+                and Stratos, Karl
+              
+            
+          
+        
+      
+    </span>
+
+    <span class="periodical">
+    
+      <em></em>
+    
+    
+      2018
+    
+    </span>
+  
+
+  <span class="links">
+  
+  
+  
+  
+  
+  
+  
+  
+  </span>
+
+  <!-- Hidden abstract block -->
+  
+</div>
+</li>
+<li>
+
+<div id="hoffman2016elbo">
+  
+    <span class="title">ELBO Surgery: Yet Another Way to Carve up the Variational Evidence Lower Bound</span>
+    <span class="author">
+      
+        
+          
+            
+              
+                Hoffman, Matthew D,
+              
+            
+          
+        
+      
+        
+          
+            
+              
+                and Johnson, Matthew J
+              
+            
+          
+        
+      
+    </span>
+
+    <span class="periodical">
+    
+      <em>In NIPS Workshop on Advances in Approximate Bayesian Inference</em>
+    
+    
+      2016
+    
+    </span>
+  
+
+  <span class="links">
+  
+  
+  
+  
+  
+  
+  
+  
+  </span>
+
+  <!-- Hidden abstract block -->
+  
+</div>
+</li></ol>
+
+<!--![iou-vs-xent](/img/vgg6xs-fc6-k1-512-deconv-k64s32-iou-vs-xent.png)-->
+
+      </div>
+    </div>
+
+    <footer>
+
+  <div class="wrapper">
+    &copy; Copyright 2022 .
+    Powered by <a href="http://jekyllrb.com/" target="_blank">Jekyll</a> with <a href="https://github.com/alshedivat/al-folio">al-folio</a> theme. Hosted by <a href="https://pages.github.com/" target="_blank">GitHub Pages</a>.
+
+    
+  </div>
+
+</footer>
+
+
+    <!-- Load jQuery -->
+<script src="//code.jquery.com/jquery-1.12.4.min.js"></script>
+
+<!-- Load Common JS -->
+<script src="/assets/js/common.js"></script>
+
+
+<!-- Load KaTeX -->
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.js"></script>
+<script src="/assets/js/katex.js"></script>
+
+
+
+
+<!-- Include custom icon fonts -->
+<link rel="stylesheet" href="/assets/css/fontawesome-all.min.css">
+<link rel="stylesheet" href="/assets/css/academicons.min.css">
+
+<!-- Google Analytics -->
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-XXXXXXXXX', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+  </body>
+
+</html>
